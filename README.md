@@ -13,7 +13,7 @@ SeriesTracker is a Spring Boot CRUD web application for tracking TV series and w
 - Spring Boot
 - Spring Security
 - Spring Data JPA
-- PostgreSQL
+- MySQL
 - Thymeleaf
 - Bean Validation
 
