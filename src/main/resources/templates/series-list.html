@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SeriesTracker</title>
+</head>
+<body>
+<h1>SeriesTracker</h1>
+
+<table>
+    <thead>
+    <tr>
+        <th>Title</th>
+        <th>Platform</th>
+    </tr>
+    </thead>
+    <tbody>
+    <tr th:each="series : ${seriesList}">
+        <td th:text="${series.title}">Title</td>
+        <td th:text="${series.platform}">Platform</td>
+    </tr>
+    </tbody>
+</table>
+
+<p th:if="${#lists.isEmpty(seriesList)}">No series yet.</p>
+</body>
+</html>
