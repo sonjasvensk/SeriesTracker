@@ -8,6 +8,22 @@
 <body>
 <h1>SeriesTracker</h1>
 
+<form th:action="@{/series}" th:object="${seriesForm}" method="post">
+    <div>
+        <label for="title">Title</label>
+        <input id="title" type="text" th:field="*{title}">
+        <p th:if="${#fields.hasErrors('title')}" th:errors="*{title}"></p>
+    </div>
+
+    <div>
+        <label for="platform">Platform</label>
+        <input id="platform" type="text" th:field="*{platform}">
+        <p th:if="${#fields.hasErrors('platform')}" th:errors="*{platform}"></p>
+    </div>
+
+    <button type="submit">Add series</button>
+</form>
+
 <table>
     <thead>
     <tr>
