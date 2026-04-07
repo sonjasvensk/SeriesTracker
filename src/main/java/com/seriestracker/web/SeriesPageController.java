@@ -8,6 +8,7 @@ import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 
 @Controller
@@ -36,6 +37,12 @@ public class SeriesPageController {
         }
 
         seriesRepository.save(seriesForm);
+        return "redirect:/series";
+    }
+
+    @PostMapping("/series/{id}/delete")
+    public String deleteSeries(@PathVariable Long id) {
+        seriesRepository.deleteById(id);
         return "redirect:/series";
     }
 }
