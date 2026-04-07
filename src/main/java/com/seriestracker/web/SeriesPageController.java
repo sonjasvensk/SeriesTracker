@@ -19,7 +19,7 @@ public class SeriesPageController {
         this.seriesRepository = seriesRepository;
     }
 
-    @GetMapping({"/", "/series"})
+    @GetMapping({"/", "/series", "/series-list"})
     public String listPage(Model model) {
         model.addAttribute("seriesForm", new Series());
         model.addAttribute("seriesList", seriesRepository.findAll());
