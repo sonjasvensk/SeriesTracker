@@ -22,55 +22,59 @@ public class SeriesPageController {
 
     @GetMapping({"/", "/series", "/series-list"})
     public String listPage(Model model) {
-        model.addAttribute("seriesForm", new Series());
         model.addAttribute("seriesList", seriesRepository.findAll());
         return "series-list";
     }
 
-    @PostMapping("/series")
+    @GetMapping("/admin/series")
+    public String adminPage(Model model) {
+        model.addAttribute("seriesForm", new Series());
+        model.addAttribute("seriesList", seriesRepository.findAll());
+        return "series-admin";
+    }
+
+    @PostMapping("/admin/series")
     public String createSeries(@Valid @ModelAttribute("seriesForm") Series seriesForm,
                                BindingResult bindingResult,
                                Model model) {
         if (bindingResult.hasErrors()) {
             model.addAttribute("seriesList", seriesRepository.findAll());
-            return "series-list";
+            return "series-admin";
         }
 
         seriesRepository.save(seriesForm);
-        return "redirect:/series";
+        return "redirect:/admin/series";
     }
 
-    @PostMapping("/series/{id}/delete")
+    @PostMapping("/admin/series/{id}/delete")
     public String deleteSeries(@PathVariable Long id) {
         seriesRepository.deleteById(id);
-        return "redirect:/series";
+        return "redirect:/admin/series";
     }
 
-    @GetMapping("/series/{id}/edit")
+    @GetMapping("/admin/series/{id}/edit")
     public String editSeries(@PathVariable Long id, Model model) {
         Series series = seriesRepository.findById(id).orElse(null);
 
         if (series == null) {
-            return "redirect:/series";
+            return "redirect:/admin/series";
         }
 
         model.addAttribute("seriesForm", series);
-        model.addAttribute("seriesList", seriesRepository.findAll());
         return "series-edit";
     }
 
-    @PostMapping("/series/{id}/edit")
+    @PostMapping("/admin/series/{id}/edit")
     public String updateSeries(@PathVariable Long id,
                                @Valid @ModelAttribute("seriesForm") Series seriesForm,
                                BindingResult bindingResult,
                                Model model) {
         if (bindingResult.hasErrors()) {
-            model.addAttribute("seriesList", seriesRepository.findAll());
             return "series-edit";
         }
 
         seriesForm.setId(id);
         seriesRepository.save(seriesForm);
-        return "redirect:/series";
+        return "redirect:/admin/series";
     }
 }

@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Series admin</title>
+</head>
+<body>
+<h1>Series admin</h1>
+
+<p><a th:href="@{/series}">Public view</a></p>
+
+<form th:action="@{/admin/series}" th:object="${seriesForm}" method="post">
+    <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}">
+
+    <div>
+        <label for="title">Title</label>
+        <input id="title" type="text" th:field="*{title}">
+        <p th:if="${#fields.hasErrors('title')}" th:errors="*{title}"></p>
+    </div>
+
+    <div>
+        <label for="platform">Platform</label>
+        <input id="platform" type="text" th:field="*{platform}">
+        <p th:if="${#fields.hasErrors('platform')}" th:errors="*{platform}"></p>
+    </div>
+
+    <button type="submit">Add series</button>
+</form>
+
+<table>
+    <thead>
+    <tr>
+        <th>Title</th>
+        <th>Platform</th>
+        <th>Actions</th>
+    </tr>
+    </thead>
+    <tbody>
+    <tr th:each="series : ${seriesList}">
+        <td th:text="${series.title}">Title</td>
+        <td th:text="${series.platform}">Platform</td>
+        <td>
+            <a th:href="@{/admin/series/{id}/edit(id=${series.id})}">Edit</a>
+            <form th:action="@{/admin/series/{id}/delete(id=${series.id})}" method="post">
+                <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}">
+                <button type="submit">Delete</button>
+            </form>
+        </td>
+    </tr>
+    </tbody>
+</table>
+
+<p th:if="${#lists.isEmpty(seriesList)}">No series yet.</p>
+</body>
+</html>

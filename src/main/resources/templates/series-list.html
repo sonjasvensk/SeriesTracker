@@ -8,40 +8,19 @@
 <body>
 <h1>SeriesTracker</h1>
 
-<form th:action="@{/series}" th:object="${seriesForm}" method="post">
-    <div>
-        <label for="title">Title</label>
-        <input id="title" type="text" th:field="*{title}">
-        <p th:if="${#fields.hasErrors('title')}" th:errors="*{title}"></p>
-    </div>
-
-    <div>
-        <label for="platform">Platform</label>
-        <input id="platform" type="text" th:field="*{platform}">
-        <p th:if="${#fields.hasErrors('platform')}" th:errors="*{platform}"></p>
-    </div>
-
-    <button type="submit">Add series</button>
-</form>
+<p><a th:href="@{/admin/series}">Admin</a></p>
 
 <table>
     <thead>
     <tr>
         <th>Title</th>
         <th>Platform</th>
-        <th>Actions</th>
     </tr>
     </thead>
     <tbody>
     <tr th:each="series : ${seriesList}">
         <td th:text="${series.title}">Title</td>
         <td th:text="${series.platform}">Platform</td>
-        <td>
-            <a th:href="@{/series/{id}/edit(id=${series.id})}">Edit</a>
-            <form th:action="@{/series/{id}/delete(id=${series.id})}" method="post">
-                <button type="submit">Delete</button>
-            </form>
-        </td>
     </tr>
     </tbody>
 </table>
