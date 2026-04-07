@@ -45,4 +45,32 @@ public class SeriesPageController {
         seriesRepository.deleteById(id);
         return "redirect:/series";
     }
+
+    @GetMapping("/series/{id}/edit")
+    public String editSeries(@PathVariable Long id, Model model) {
+        Series series = seriesRepository.findById(id).orElse(null);
+
+        if (series == null) {
+            return "redirect:/series";
+        }
+
+        model.addAttribute("seriesForm", series);
+        model.addAttribute("seriesList", seriesRepository.findAll());
+        return "series-edit";
+    }
+
+    @PostMapping("/series/{id}/edit")
+    public String updateSeries(@PathVariable Long id,
+                               @Valid @ModelAttribute("seriesForm") Series seriesForm,
+                               BindingResult bindingResult,
+                               Model model) {
+        if (bindingResult.hasErrors()) {
+            model.addAttribute("seriesList", seriesRepository.findAll());
+            return "series-edit";
+        }
+
+        seriesForm.setId(id);
+        seriesRepository.save(seriesForm);
+        return "redirect:/series";
+    }
 }

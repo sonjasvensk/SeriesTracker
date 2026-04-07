@@ -37,6 +37,7 @@
         <td th:text="${series.title}">Title</td>
         <td th:text="${series.platform}">Platform</td>
         <td>
+            <a th:href="@{/series/{id}/edit(id=${series.id})}">Edit</a>
             <form th:action="@{/series/{id}/delete(id=${series.id})}" method="post">
                 <button type="submit">Delete</button>
             </form>

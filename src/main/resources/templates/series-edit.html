@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Edit series</title>
+</head>
+<body>
+<h1>Edit series</h1>
+
+<form th:action="@{/series/{id}/edit(id=${seriesForm.id})}" th:object="${seriesForm}" method="post">
+    <input type="hidden" th:field="*{id}">
+
+    <div>
+        <label for="title">Title</label>
+        <input id="title" type="text" th:field="*{title}">
+        <p th:if="${#fields.hasErrors('title')}" th:errors="*{title}"></p>
+    </div>
+
+    <div>
+        <label for="platform">Platform</label>
+        <input id="platform" type="text" th:field="*{platform}">
+        <p th:if="${#fields.hasErrors('platform')}" th:errors="*{platform}"></p>
+    </div>
+
+    <button type="submit">Save changes</button>
+</form>
+
+<p><a th:href="@{/series}">Back to list</a></p>
+</body>
+</html>
