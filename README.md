@@ -25,4 +25,4 @@ Environment variables required:
 - DB_PASSWORD
 
 Run with:
-./mvnw spring-boot:run
+mvn spring-boot:run
