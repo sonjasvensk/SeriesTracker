@@ -47,6 +47,7 @@ public class SeriesController {
                 .map(existing -> {
                     existing.setTitle(update.getTitle());
                     existing.setPlatform(update.getPlatform());
+                    existing.setGenre(update.getGenre());
                     return ResponseEntity.ok(seriesRepository.save(existing));
                 })
                 .orElseGet(() -> ResponseEntity.notFound().build());

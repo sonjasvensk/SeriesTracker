@@ -21,6 +21,9 @@ public class Series {
     @NotBlank
     private String platform;
 
+    @NotBlank
+    private String genre;
+
     public Long getId() {
         return id;
     }
@@ -43,5 +46,13 @@ public class Series {
 
     public void setPlatform(String platform) {
         this.platform = platform;
+    }
+
+    public String getGenre() {
+        return genre;
+    }
+
+    public void setGenre(String genre) {
+        this.genre = genre;
     }
 }

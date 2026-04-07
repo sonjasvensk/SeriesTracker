@@ -15,12 +15,14 @@
     <tr>
         <th>Title</th>
         <th>Platform</th>
+        <th>Genre</th>
     </tr>
     </thead>
     <tbody>
     <tr th:each="series : ${seriesList}">
         <td th:text="${series.title}">Title</td>
         <td th:text="${series.platform}">Platform</td>
+        <td th:text="${series.genre}">Genre</td>
     </tr>
     </tbody>
 </table>

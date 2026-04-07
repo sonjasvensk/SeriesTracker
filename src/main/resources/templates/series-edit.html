@@ -24,6 +24,12 @@
         <p th:if="${#fields.hasErrors('platform')}" th:errors="*{platform}"></p>
     </div>
 
+    <div>
+        <label for="genre">Genre</label>
+        <input id="genre" type="text" th:field="*{genre}">
+        <p th:if="${#fields.hasErrors('genre')}" th:errors="*{genre}"></p>
+    </div>
+
     <button type="submit">Save changes</button>
 </form>
 
