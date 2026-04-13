@@ -36,6 +36,19 @@
         <p th:if="${#fields.hasErrors('tags')}" th:errors="*{tags}"></p>
     </div>
 
+    <div>
+        <label for="rating">Rating</label>
+        <select id="rating" th:field="*{rating}">
+            <option value="">Select</option>
+            <option value="1">1</option>
+            <option value="2">2</option>
+            <option value="3">3</option>
+            <option value="4">4</option>
+            <option value="5">5</option>
+        </select>
+        <p th:if="${#fields.hasErrors('rating')}" th:errors="*{rating}"></p>
+    </div>
+
     <button type="submit">Save changes</button>
 </form>
 

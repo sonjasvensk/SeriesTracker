@@ -17,6 +17,7 @@
         <th>Platform</th>
         <th>Genre</th>
         <th>Tags</th>
+        <th>Rating</th>
     </tr>
     </thead>
     <tbody>
@@ -25,6 +26,7 @@
         <td th:text="${series.platform}">Platform</td>
         <td th:text="${series.genre}">Genre</td>
         <td th:text="${series.tags}">Tags</td>
+        <td th:text="${'★'.repeat(series.rating)}">Rating</td>
     </tr>
     </tbody>
 </table>
