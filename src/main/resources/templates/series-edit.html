@@ -30,6 +30,12 @@
         <p th:if="${#fields.hasErrors('genre')}" th:errors="*{genre}"></p>
     </div>
 
+    <div>
+        <label for="tags">Tags</label>
+        <input id="tags" type="text" th:field="*{tags}">
+        <p th:if="${#fields.hasErrors('tags')}" th:errors="*{tags}"></p>
+    </div>
+
     <button type="submit">Save changes</button>
 </form>
 

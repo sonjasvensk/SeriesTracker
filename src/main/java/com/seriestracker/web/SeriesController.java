@@ -48,6 +48,7 @@ public class SeriesController {
                     existing.setTitle(update.getTitle());
                     existing.setPlatform(update.getPlatform());
                     existing.setGenre(update.getGenre());
+                    existing.setTags(update.getTags());
                     return ResponseEntity.ok(seriesRepository.save(existing));
                 })
                 .orElseGet(() -> ResponseEntity.notFound().build());

@@ -24,6 +24,9 @@ public class Series {
     @NotBlank
     private String genre;
 
+    @NotBlank
+    private String tags;
+
     public Long getId() {
         return id;
     }
@@ -54,5 +57,13 @@ public class Series {
 
     public void setGenre(String genre) {
         this.genre = genre;
+    }
+
+    public String getTags() {
+        return tags;
+    }
+
+    public void setTags(String tags) {
+        this.tags = tags;
     }
 }

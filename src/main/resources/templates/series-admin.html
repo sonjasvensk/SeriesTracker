@@ -31,6 +31,12 @@
         <p th:if="${#fields.hasErrors('genre')}" th:errors="*{genre}"></p>
     </div>
 
+    <div>
+        <label for="tags">Tags</label>
+        <input id="tags" type="text" th:field="*{tags}">
+        <p th:if="${#fields.hasErrors('tags')}" th:errors="*{tags}"></p>
+    </div>
+
     <button type="submit">Add series</button>
 </form>
 
@@ -40,6 +46,7 @@
         <th>Title</th>
         <th>Platform</th>
         <th>Genre</th>
+        <th>Tags</th>
         <th>Actions</th>
     </tr>
     </thead>
@@ -48,6 +55,7 @@
         <td th:text="${series.title}">Title</td>
         <td th:text="${series.platform}">Platform</td>
         <td th:text="${series.genre}">Genre</td>
+        <td th:text="${series.tags}">Tags</td>
         <td>
             <a th:href="@{/admin/series/{id}/edit(id=${series.id})}">Edit</a>
             <form th:action="@{/admin/series/{id}/delete(id=${series.id})}" method="post">
