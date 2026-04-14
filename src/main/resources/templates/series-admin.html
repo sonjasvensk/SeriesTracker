@@ -27,7 +27,12 @@
 
     <div>
         <label for="genre">Genre</label>
-        <input id="genre" type="text" th:field="*{genre}">
+        <select id="genre" th:field="*{genre}">
+            <option value="">Select</option>
+            <option th:each="genreOption : ${T(com.seriestracker.domain.Genre).values()}"
+                    th:value="${genreOption}"
+                    th:text="${genreOption}"></option>
+        </select>
         <p th:if="${#fields.hasErrors('genre')}" th:errors="*{genre}"></p>
     </div>
 
