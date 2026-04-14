@@ -29,8 +29,8 @@
         <select id="genre" th:field="*{genre}">
             <option value="">Select</option>
             <option th:each="genreOption : ${T(com.seriestracker.domain.Genre).values()}"
-                    th:value="${genreOption}"
-                    th:text="${genreOption}"></option>
+                    th:value="${genreOption.name()}"
+                    th:text="${genreOption.label}"></option>
         </select>
         <p th:if="${#fields.hasErrors('genre')}" th:errors="*{genre}"></p>
     </div>
