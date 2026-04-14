@@ -18,6 +18,7 @@
         <th>Genre</th>
         <th>Tags</th>
         <th>Rating</th>
+        <th>Comment</th>
     </tr>
     </thead>
     <tbody>
@@ -27,6 +28,7 @@
         <td th:text="${series.genre}">Genre</td>
         <td th:text="${series.tags}">Tags</td>
         <td th:text="${'★'.repeat(series.rating)}">Rating</td>
+        <td th:text="${series.comment}">Comment</td>
     </tr>
     </tbody>
 </table>

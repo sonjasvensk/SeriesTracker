@@ -49,6 +49,12 @@
         <p th:if="${#fields.hasErrors('rating')}" th:errors="*{rating}"></p>
     </div>
 
+    <div>
+        <label for="comment">Comment</label>
+        <textarea id="comment" th:field="*{comment}" rows="4"></textarea>
+        <p th:if="${#fields.hasErrors('comment')}" th:errors="*{comment}"></p>
+    </div>
+
     <button type="submit">Save changes</button>
 </form>
 

@@ -50,6 +50,7 @@ public class SeriesController {
                     existing.setGenre(update.getGenre());
                     existing.setTags(update.getTags());
                     existing.setRating(update.getRating());
+                    existing.setComment(update.getComment());
                     return ResponseEntity.ok(seriesRepository.save(existing));
                 })
                 .orElseGet(() -> ResponseEntity.notFound().build());
