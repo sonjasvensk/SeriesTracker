@@ -2,7 +2,13 @@ package com.seriestracker.web;
 
 import com.seriestracker.domain.Series;
 import com.seriestracker.domain.SeriesRepository;
+import com.seriestracker.domain.Tag;
+import com.seriestracker.domain.TagRepository;
 import jakarta.validation.Valid;
+import java.util.List;
+import java.util.Locale;
+import java.util.Set;
+import java.util.stream.Collectors;
 import org.springframework.stereotype.Controller;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.ModelAttribute;
@@ -15,9 +21,11 @@ import org.springframework.web.bind.annotation.PostMapping;
 public class SeriesPageController {
 
     private final SeriesRepository seriesRepository;
+    private final TagRepository tagRepository;
 
-    public SeriesPageController(SeriesRepository seriesRepository) {
+    public SeriesPageController(SeriesRepository seriesRepository, TagRepository tagRepository) {
         this.seriesRepository = seriesRepository;
+        this.tagRepository = tagRepository;
     }
 
     @GetMapping({"/", "/series", "/series-list"})
@@ -42,6 +50,7 @@ public class SeriesPageController {
             return "series-admin";
         }
 
+        seriesForm.setTagEntities(resolveTagEntities(seriesForm.getTags()));
         seriesRepository.save(seriesForm);
         return "redirect:/admin/series";
     }
@@ -74,7 +83,25 @@ public class SeriesPageController {
         }
 
         seriesForm.setId(id);
+        seriesForm.setTagEntities(resolveTagEntities(seriesForm.getTags()));
         seriesRepository.save(seriesForm);
         return "redirect:/admin/series";
     }
+
+        private Set<Tag> resolveTagEntities(String tagsInput) {
+        return List.of(tagsInput.split(","))
+            .stream()
+            .map(String::trim)
+            .filter(tag -> !tag.isBlank())
+            .collect(Collectors.toMap(
+                tag -> tag.toLowerCase(Locale.ROOT),
+                tag -> tag,
+                (first, second) -> first
+            ))
+            .values()
+            .stream()
+            .map(tag -> tagRepository.findByNameIgnoreCase(tag)
+                .orElseGet(() -> tagRepository.save(new Tag(tag))))
+            .collect(Collectors.toCollection(java.util.LinkedHashSet::new));
+        }
 }

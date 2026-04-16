@@ -6,13 +6,18 @@ import jakarta.persistence.Enumerated;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.JoinTable;
 import jakarta.persistence.Lob;
+import jakarta.persistence.ManyToMany;
 import jakarta.persistence.Table;
 import jakarta.validation.constraints.Max;
 import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
+import java.util.LinkedHashSet;
+import java.util.Set;
 
 @Entity
 @Table(name = "series")
@@ -34,6 +39,14 @@ public class Series {
 
     @NotBlank
     private String tags;
+
+        @ManyToMany
+        @JoinTable(
+            name = "series_tags",
+            joinColumns = @JoinColumn(name = "series_id"),
+            inverseJoinColumns = @JoinColumn(name = "tag_id")
+        )
+        private Set<Tag> tagEntities = new LinkedHashSet<>();
 
     @NotNull
     @Min(1)
@@ -82,6 +95,14 @@ public class Series {
 
     public void setTags(String tags) {
         this.tags = tags;
+    }
+
+    public Set<Tag> getTagEntities() {
+        return tagEntities;
+    }
+
+    public void setTagEntities(Set<Tag> tagEntities) {
+        this.tagEntities = tagEntities;
     }
 
     public Integer getRating() {
