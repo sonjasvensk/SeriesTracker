@@ -8,7 +8,11 @@
 <body>
 <h1>Login</h1>
 
+<p th:if="${param.resetSuccess}">Password updated. You can now log in.</p>
+
 <form th:action="@{/login}" method="post">
+    <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}">
+
     <div>
         <label for="username">Username</label>
         <input id="username" type="text" name="username">
@@ -22,6 +26,7 @@
     <button type="submit">Login</button>
 </form>
 
+<p><a th:href="@{/forgot-password}">Forgot password?</a></p>
 <p><a th:href="@{/signup}">Sign up</a></p>
 <p><a th:href="@{/}">Back</a></p>
 </body>

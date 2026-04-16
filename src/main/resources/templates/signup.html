@@ -9,6 +9,8 @@
 <h1>Sign up</h1>
 
 <form th:action="@{/signup}" th:object="${user}" method="post">
+    <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}">
+
     <div>
         <label for="username">Username</label>
         <input id="username" type="text" th:field="*{username}">
@@ -30,6 +32,7 @@
     <button type="submit">Sign up</button>
 </form>
 
+<p><a th:href="@{/login}">Login</a></p>
 <p><a th:href="@{/}">Back</a></p>
 </body>
 </html>

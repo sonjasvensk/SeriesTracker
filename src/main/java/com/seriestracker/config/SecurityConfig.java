@@ -13,7 +13,16 @@ public class SecurityConfig {
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         http
                 .authorizeHttpRequests(auth -> auth
-                        .requestMatchers("/", "/series", "/series-list", "/signup", "/login", "/error").permitAll()
+                        .requestMatchers(
+                                "/",
+                                "/series",
+                                "/series-list",
+                                "/signup",
+                                "/login",
+                                "/forgot-password",
+                                "/reset-password",
+                                "/error"
+                        ).permitAll()
                         .requestMatchers("/admin/**").authenticated()
                         .anyRequest().authenticated())
                 .formLogin(form -> form
