@@ -13,10 +13,14 @@ public class SecurityConfig {
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         http
                 .authorizeHttpRequests(auth -> auth
-                        .requestMatchers("/", "/series", "/series-list", "/error").permitAll()
+                        .requestMatchers("/", "/series", "/series-list", "/signup", "/login", "/error").permitAll()
                         .requestMatchers("/admin/**").authenticated()
                         .anyRequest().authenticated())
-                .formLogin(Customizer.withDefaults())
+                .formLogin(form -> form
+                        .loginPage("/login")
+                        .defaultSuccessUrl("/admin/series", true)
+                        .permitAll()
+                )
                 .logout(Customizer.withDefaults());
 
         return http.build();
