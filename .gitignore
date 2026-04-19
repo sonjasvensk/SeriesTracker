@@ -25,3 +25,11 @@ replay_pid*
 
 # Maven build output
 target/
+
+# Local runtime artifacts
+*.pid
+*.html
+*.txt
+
+# Local H2 database files
+data/*.db
