@@ -44,7 +44,8 @@ public class SeriesPageController {
 
     @GetMapping({"/", "/series", "/series-list"})
     public String listPage(Model model) {
-        model.addAttribute("seriesList", seriesRepository.findAll());
+        User user = getCurrentUser();
+        model.addAttribute("seriesList", user != null ? seriesRepository.findByUser(user) : List.of());
         return "series-list";
     }
 

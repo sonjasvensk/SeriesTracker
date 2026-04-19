@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<html lang="en" xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -111,7 +111,29 @@
             <div th:if="${#fields.hasErrors('password')}" class="error-text" th:errors="*{password}"></div>
         </div>
 
-        <button type="submit" class="btn btn-signup">Create Account</button>
+        <div class="mb-3">
+            <label for="confirmPassword" class="form-label">Confirm Password</label>
+            <input id="confirmPassword" type="password" class="form-control" required>
+            <div id="passwordError" class="error-text" style="display: none;">Passwords do not match</div>
+        </div>
+
+        <button type="submit" class="btn btn-signup" onclick="return validatePasswords()">Create Account</button>
+
+        <script>
+            function validatePasswords() {
+                const password = document.getElementById('password').value;
+                const confirmPassword = document.getElementById('confirmPassword').value;
+                const errorDiv = document.getElementById('passwordError');
+                
+                if (password !== confirmPassword) {
+                    errorDiv.style.display = 'block';
+                    return false;
+                } else {
+                    errorDiv.style.display = 'none';
+                    return true;
+                }
+            }
+        </script>
     </form>
 
     <div class="links-section">

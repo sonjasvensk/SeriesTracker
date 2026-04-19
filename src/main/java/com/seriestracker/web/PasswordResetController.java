@@ -6,15 +6,20 @@ import com.seriestracker.domain.User;
 import com.seriestracker.domain.UserRepository;
 import java.time.LocalDateTime;
 import java.util.UUID;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
 @Controller
 public class PasswordResetController {
+
+    private static final Logger LOG = LoggerFactory.getLogger(PasswordResetController.class);
 
     private final UserRepository userRepository;
     private final PasswordResetTokenRepository passwordResetTokenRepository;
@@ -28,6 +33,11 @@ public class PasswordResetController {
         this.passwordEncoder = passwordEncoder;
     }
 
+    @ModelAttribute("invalidToken")
+    public Boolean invalidTokenDefault() {
+        return Boolean.FALSE;
+    }
+
     @GetMapping("/forgot-password")
     public String showForgotPassword() {
         return "forgot-password";
@@ -37,23 +47,34 @@ public class PasswordResetController {
     public String handleForgotPassword(@RequestParam String email, Model model) {
         model.addAttribute("message", "If the email exists, reset instructions are available.");
 
-        userRepository.findByEmail(email).ifPresent(user -> {
-            passwordResetTokenRepository.deleteByUserId(user.getId());
+        try {
+            userRepository.findByEmail(email).ifPresent(user -> {
+                PasswordResetToken token = new PasswordResetToken();
+                token.setUser(user);
+                token.setToken(UUID.randomUUID().toString());
+                token.setExpiresAt(LocalDateTime.now().plusMinutes(30));
+                passwordResetTokenRepository.save(token);
 
-            PasswordResetToken token = new PasswordResetToken();
-            token.setUser(user);
-            token.setToken(UUID.randomUUID().toString());
-            token.setExpiresAt(LocalDateTime.now().plusMinutes(30));
-            passwordResetTokenRepository.save(token);
-
-            model.addAttribute("resetLink", "/reset-password?token=" + token.getToken());
-        });
+                model.addAttribute("resetToken", token.getToken());
+                model.addAttribute("resetLink", "/reset-password?token=" + token.getToken());
+                model.addAttribute("deliveryNotice", "Email sending is not configured yet. Use the reset link below.");
+                LOG.info("Password reset link for {}: /reset-password?token={}", email, token.getToken());
+            });
+        } catch (Exception ex) {
+            LOG.error("Forgot password flow failed for email {}", email, ex);
+            model.addAttribute("message", "Something went wrong. Please try again.");
+        }
 
         return "forgot-password";
     }
 
     @GetMapping("/reset-password")
-    public String showResetPassword(@RequestParam String token, Model model) {
+    public String showResetPassword(@RequestParam(required = false) String token, Model model) {
+        if (token == null || token.isBlank()) {
+            model.addAttribute("invalidToken", true);
+            return "reset-password";
+        }
+
         PasswordResetToken resetToken = passwordResetTokenRepository.findByToken(token).orElse(null);
 
         if (resetToken == null || resetToken.getExpiresAt().isBefore(LocalDateTime.now())) {
@@ -61,6 +82,7 @@ public class PasswordResetController {
             return "reset-password";
         }
 
+        model.addAttribute("invalidToken", false);
         model.addAttribute("token", token);
         return "reset-password";
     }
@@ -69,6 +91,11 @@ public class PasswordResetController {
     public String handleResetPassword(@RequestParam String token,
                                       @RequestParam String password,
                                       Model model) {
+        if (token == null || token.isBlank()) {
+            model.addAttribute("invalidToken", true);
+            return "reset-password";
+        }
+
         PasswordResetToken resetToken = passwordResetTokenRepository.findByToken(token).orElse(null);
 
         if (resetToken == null || resetToken.getExpiresAt().isBefore(LocalDateTime.now())) {
@@ -77,6 +104,7 @@ public class PasswordResetController {
         }
 
         if (password == null || password.length() < 6) {
+            model.addAttribute("invalidToken", false);
             model.addAttribute("token", token);
             model.addAttribute("passwordError", "Password must be at least 6 characters");
             return "reset-password";

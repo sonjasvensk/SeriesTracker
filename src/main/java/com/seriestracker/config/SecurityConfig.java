@@ -37,7 +37,7 @@ public class SecurityConfig {
                         .anyRequest().authenticated())
                 .formLogin(form -> form
                         .loginPage("/login")
-                        .defaultSuccessUrl("/admin/series", true)
+                        .defaultSuccessUrl("/series-list", true)
                         .permitAll()
                 )
                 .logout(Customizer.withDefaults());

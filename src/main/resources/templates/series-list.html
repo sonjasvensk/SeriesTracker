@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<html lang="en" xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -118,11 +118,17 @@
         </button>
         <div class="collapse navbar-collapse" id="navbarNav">
             <ul class="navbar-nav ms-auto">
-                <li class="nav-item">
-                    <a class="nav-link" th:href="@{/admin/series}">📋 Admin</a>
+                <li class="nav-item" sec:authorize="isAuthenticated()">
+                    <a class="nav-link" th:href="@{/admin/series}">📋 Manage Series</a>
                 </li>
-                <li class="nav-item">
+                <li class="nav-item" sec:authorize="isAuthenticated()">
                     <a class="nav-link" th:href="@{/logout}" onclick="event.preventDefault(); document.getElementById('logout-form').submit();">🚪 Logout</a>
+                </li>
+                <li class="nav-item" sec:authorize="isAnonymous()">
+                    <a class="nav-link" th:href="@{/login}">🔐 Login</a>
+                </li>
+                <li class="nav-item" sec:authorize="isAnonymous()">
+                    <a class="nav-link" th:href="@{/signup}">✨ Sign Up</a>
                 </li>
             </ul>
         </div>
@@ -133,12 +139,29 @@
     <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}">
 </form>
 
-<div class="container">
-    <h1>📺 Popular Series</h1>
+<div class="container" sec:authorize="isAnonymous()">
+    <div class="card mx-auto" style="max-width: 760px;">
+        <div class="card-body text-center p-5">
+            <h1 class="mb-3">Welcome To SeriesTracker</h1>
+            <p class="mb-4" style="color: #d6ecff;">Track your watched series, ratings, and notes in one place.</p>
+            <p class="mb-4">Please log in to see your watched series list.</p>
+            <div class="d-flex gap-3 justify-content-center flex-wrap">
+                <a class="btn btn-admin" th:href="@{/login}">🔐 Login</a>
+                <a class="btn btn-admin" th:href="@{/signup}">✨ Create Account</a>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="container" sec:authorize="isAuthenticated()">
+    <h1>📺 Watched Series</h1>
+    <div class="text-center mb-4">
+        <a class="btn btn-admin" th:href="@{/admin/series}">➕ Add Series</a>
+    </div>
 
     <div th:if="${#lists.isEmpty(seriesList)}" class="empty-state">
         <h2>No series added yet</h2>
-        <p>Check back soon for more content!</p>
+        <p>Use the Add Series button to create your first entry.</p>
     </div>
 
     <div class="row g-4" th:unless="${#lists.isEmpty(seriesList)}">
@@ -170,7 +193,7 @@
                     
                     <div th:if="${series.comment != null and !series.comment.isEmpty()}">
                         <strong>Notes:</strong>
-                        <p class="small text-muted" th:text="${series.comment.length() > 100 ? series.comment.substring(0, 100) + '...' : series.comment}">Comment</p>
+                        <p class="small" style="color: #d6ecff;" th:text="${series.comment.length() > 100 ? series.comment.substring(0, 100) + '...' : series.comment}">Comment</p>
                     </div>
                 </div>
             </div>
