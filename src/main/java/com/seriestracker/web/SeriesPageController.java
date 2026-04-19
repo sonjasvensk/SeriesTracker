@@ -4,11 +4,15 @@ import com.seriestracker.domain.Series;
 import com.seriestracker.domain.SeriesRepository;
 import com.seriestracker.domain.Tag;
 import com.seriestracker.domain.TagRepository;
+import com.seriestracker.domain.User;
+import com.seriestracker.domain.UserRepository;
 import jakarta.validation.Valid;
 import java.util.List;
 import java.util.Locale;
 import java.util.Set;
 import java.util.stream.Collectors;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.ModelAttribute;
@@ -22,10 +26,20 @@ public class SeriesPageController {
 
     private final SeriesRepository seriesRepository;
     private final TagRepository tagRepository;
+    private final UserRepository userRepository;
 
-    public SeriesPageController(SeriesRepository seriesRepository, TagRepository tagRepository) {
+    public SeriesPageController(SeriesRepository seriesRepository, TagRepository tagRepository, UserRepository userRepository) {
         this.seriesRepository = seriesRepository;
         this.tagRepository = tagRepository;
+        this.userRepository = userRepository;
+    }
+
+    private User getCurrentUser() {
+        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+        if (auth != null && auth.isAuthenticated()) {
+            return userRepository.findByUsername(auth.getName()).orElse(null);
+        }
+        return null;
     }
 
     @GetMapping({"/", "/series", "/series-list"})
@@ -36,8 +50,9 @@ public class SeriesPageController {
 
     @GetMapping("/admin/series")
     public String adminPage(Model model) {
+        User user = getCurrentUser();
         model.addAttribute("seriesForm", new Series());
-        model.addAttribute("seriesList", seriesRepository.findAll());
+        model.addAttribute("seriesList", user != null ? seriesRepository.findByUser(user) : List.of());
         return "series-admin";
     }
 
@@ -46,26 +61,39 @@ public class SeriesPageController {
                                BindingResult bindingResult,
                                Model model) {
         if (bindingResult.hasErrors()) {
-            model.addAttribute("seriesList", seriesRepository.findAll());
+            User user = getCurrentUser();
+            model.addAttribute("seriesList", user != null ? seriesRepository.findByUser(user) : List.of());
             return "series-admin";
         }
 
-        seriesForm.setTagEntities(resolveTagEntities(seriesForm.getTags()));
-        seriesRepository.save(seriesForm);
+        User user = getCurrentUser();
+        if (user != null) {
+            seriesForm.setUser(user);
+            seriesForm.setTagEntities(resolveTagEntities(seriesForm.getTags()));
+            seriesRepository.save(seriesForm);
+        }
         return "redirect:/admin/series";
     }
 
     @PostMapping("/admin/series/{id}/delete")
     public String deleteSeries(@PathVariable Long id) {
-        seriesRepository.deleteById(id);
+        User user = getCurrentUser();
+        if (user != null) {
+            seriesRepository.findById(id).ifPresent(series -> {
+                if (series.getUser().getId().equals(user.getId())) {
+                    seriesRepository.deleteById(id);
+                }
+            });
+        }
         return "redirect:/admin/series";
     }
 
     @GetMapping("/admin/series/{id}/edit")
     public String editSeries(@PathVariable Long id, Model model) {
+        User user = getCurrentUser();
         Series series = seriesRepository.findById(id).orElse(null);
 
-        if (series == null) {
+        if (series == null || user == null || !series.getUser().getId().equals(user.getId())) {
             return "redirect:/admin/series";
         }
 
@@ -82,7 +110,18 @@ public class SeriesPageController {
             return "series-edit";
         }
 
+        User user = getCurrentUser();
+        if (user == null) {
+            return "redirect:/admin/series";
+        }
+
+        Series existing = seriesRepository.findById(id).orElse(null);
+        if (existing == null || !existing.getUser().getId().equals(user.getId())) {
+            return "redirect:/admin/series";
+        }
+
         seriesForm.setId(id);
+        seriesForm.setUser(user);
         seriesForm.setTagEntities(resolveTagEntities(seriesForm.getTags()));
         seriesRepository.save(seriesForm);
         return "redirect:/admin/series";
