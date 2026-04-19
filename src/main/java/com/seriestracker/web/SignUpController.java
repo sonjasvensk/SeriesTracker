@@ -3,6 +3,7 @@ package com.seriestracker.web;
 import com.seriestracker.domain.User;
 import com.seriestracker.domain.UserRepository;
 import jakarta.validation.Valid;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
@@ -14,9 +15,11 @@ import org.springframework.web.bind.annotation.PostMapping;
 public class SignUpController {
 
     private final UserRepository userRepository;
+    private final PasswordEncoder passwordEncoder;
 
-    public SignUpController(UserRepository userRepository) {
+    public SignUpController(UserRepository userRepository, PasswordEncoder passwordEncoder) {
         this.userRepository = userRepository;
+        this.passwordEncoder = passwordEncoder;
     }
 
     @GetMapping("/signup")
@@ -43,6 +46,7 @@ public class SignUpController {
             return "signup";
         }
 
+        user.setPassword(passwordEncoder.encode(user.getPassword()));
         userRepository.save(user);
         return "redirect:/login";
     }

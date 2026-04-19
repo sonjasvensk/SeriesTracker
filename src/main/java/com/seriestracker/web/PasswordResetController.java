@@ -6,6 +6,7 @@ import com.seriestracker.domain.User;
 import com.seriestracker.domain.UserRepository;
 import java.time.LocalDateTime;
 import java.util.UUID;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -17,11 +18,14 @@ public class PasswordResetController {
 
     private final UserRepository userRepository;
     private final PasswordResetTokenRepository passwordResetTokenRepository;
+    private final PasswordEncoder passwordEncoder;
 
     public PasswordResetController(UserRepository userRepository,
-                                   PasswordResetTokenRepository passwordResetTokenRepository) {
+                                   PasswordResetTokenRepository passwordResetTokenRepository,
+                                   PasswordEncoder passwordEncoder) {
         this.userRepository = userRepository;
         this.passwordResetTokenRepository = passwordResetTokenRepository;
+        this.passwordEncoder = passwordEncoder;
     }
 
     @GetMapping("/forgot-password")
@@ -79,7 +83,7 @@ public class PasswordResetController {
         }
 
         User user = resetToken.getUser();
-        user.setPassword(password);
+        user.setPassword(passwordEncoder.encode(password));
         userRepository.save(user);
         passwordResetTokenRepository.delete(resetToken);
 
