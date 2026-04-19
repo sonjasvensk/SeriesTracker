@@ -13,6 +13,7 @@ import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Collectors;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -46,12 +47,14 @@ public class SeriesController {
         return null;
     }
 
+    @PreAuthorize("isAuthenticated()")
     @GetMapping
     public List<Series> findAll() {
         User user = getCurrentUser();
         return user != null ? seriesRepository.findByUser(user) : List.of();
     }
 
+    @PreAuthorize("isAuthenticated()")
     @PostMapping
     public Series create(@Valid @RequestBody Series series) {
         User user = getCurrentUser();
@@ -63,6 +66,7 @@ public class SeriesController {
         return seriesRepository.save(series);
     }
 
+    @PreAuthorize("isAuthenticated()")
     @GetMapping("/{id}")
     public ResponseEntity<Series> findById(@PathVariable Long id) {
         User user = getCurrentUser();
@@ -72,6 +76,7 @@ public class SeriesController {
                 .orElseGet(() -> ResponseEntity.notFound().build());
     }
 
+    @PreAuthorize("isAuthenticated()")
     @PutMapping("/{id}")
     public ResponseEntity<Series> update(@PathVariable Long id, @Valid @RequestBody Series update) {
         User user = getCurrentUser();
@@ -90,6 +95,7 @@ public class SeriesController {
                 .orElseGet(() -> ResponseEntity.notFound().build());
     }
 
+    @PreAuthorize("isAuthenticated()")
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> delete(@PathVariable Long id) {
         User user = getCurrentUser();
